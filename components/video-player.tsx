@@ -11,14 +11,84 @@ interface VideoPlayerProps {
 }
 
 export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: VideoPlayerProps) {
-  const videoRef = useRef<HTMLVideoElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const playerRef = useRef<any>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [progress, setProgress] = useState(0)
   const [currentTime, setCurrentTime] = useState(0)
+  const [duration, setDuration] = useState(0)
   const [showControls, setShowControls] = useState(true)
+  const [isYoutube, setIsYoutube] = useState(false)
 
+  // Detect if URL is YouTube
   useEffect(() => {
+    setIsYoutube(videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be"))
+  }, [videoUrl])
+
+  // YouTube API initialization
+  useEffect(() => {
+    if (!isYoutube) return
+
+    const tag = document.createElement("script")
+    tag.src = "https://www.youtube.com/iframe_api"
+    const firstScriptTag = document.getElementsByTagName("script")[0]
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+
+    const onPlayerReady = (event: any) => {
+      setDuration(event.target.getDuration())
+    }
+
+    const onPlayerStateChange = (event: any) => {
+      // YT.PlayerState.PLAYING
+      if (event.data === 1) setIsPlaying(true)
+      // YT.PlayerState.PAUSED
+      if (event.data === 2) setIsPlaying(false)
+      // YT.PlayerState.ENDED
+      if (event.data === 0) {
+        setIsPlaying(false)
+        onTimeUpdate(duration)
+      }
+    }
+
+    (window as any).onYouTubeIframeAPIReady = () => {
+      const videoId = videoUrl.split("v=")[1]?.split("&")[0] || videoUrl.split("/").pop()
+      playerRef.current = new (window as any).YT.Player("youtube-player", {
+        height: "100%",
+        width: "100%",
+        videoId: videoId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          rel: 0,
+          modestbranding: 1,
+          playsinline: 1,
+        },
+        events: {
+          onReady: onPlayerReady,
+          onStateChange: onPlayerStateChange,
+        },
+      })
+    }
+
+    const interval = setInterval(() => {
+      if (playerRef.current && playerRef.current.getCurrentTime) {
+        const time = playerRef.current.getCurrentTime()
+        const dur = playerRef.current.getDuration()
+        setCurrentTime(time)
+        setDuration(dur)
+        setProgress((time / dur) * 100)
+        onTimeUpdate(time)
+      }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [isYoutube, videoUrl, onTimeUpdate, duration])
+
+  // Native Video (Fallback)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    if (isYoutube) return
     const video = videoRef.current
     if (!video) return
 
@@ -26,6 +96,7 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
       const currentProgress = (video.currentTime / video.duration) * 100
       setProgress(currentProgress)
       setCurrentTime(video.currentTime)
+      setDuration(video.duration)
       onTimeUpdate(video.currentTime)
     }
 
@@ -41,12 +112,21 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
       video.removeEventListener("timeupdate", handleTimeUpdate)
       video.removeEventListener("ended", handleEnded)
     }
-  }, [onTimeUpdate])
+  }, [isYoutube, onTimeUpdate])
 
   const togglePlay = () => {
+    if (isYoutube) {
+      if (isPlaying) {
+        playerRef.current?.pauseVideo()
+      } else {
+        playerRef.current?.playVideo()
+      }
+      setIsPlaying(!isPlaying)
+      return
+    }
+
     const video = videoRef.current
     if (!video) return
-
     if (isPlaying) {
       video.pause()
     } else {
@@ -56,21 +136,29 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
   }
 
   const toggleMute = () => {
+    if (isYoutube) {
+      if (isMuted) {
+        playerRef.current?.unMute()
+      } else {
+        playerRef.current?.mute()
+      }
+      setIsMuted(!isMuted)
+      return
+    }
+
     const video = videoRef.current
     if (!video) return
-
     video.muted = !isMuted
     setIsMuted(!isMuted)
   }
 
   const toggleFullscreen = () => {
-    const video = videoRef.current
-    if (!video) return
-
-    if (document.fullscreenElement) {
-      document.exitFullscreen()
-    } else {
-      video.requestFullscreen()
+    if (containerRef.current) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen()
+      } else {
+        containerRef.current.requestFullscreen()
+      }
     }
   }
 
@@ -84,72 +172,100 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
 
   return (
     <div
-      className="relative aspect-video bg-foreground/5 rounded-xl overflow-hidden group"
+      ref={containerRef}
+      className="relative aspect-video bg-black rounded-xl overflow-hidden group shadow-2xl"
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => isPlaying && setShowControls(false)}
     >
-      <video
-        ref={videoRef}
-        src={videoUrl}
-        className="w-full h-full object-cover"
-        playsInline
+      {isYoutube ? (
+        <div id="youtube-player" className="w-full h-full pointer-events-none" />
+      ) : (
+        <video
+          ref={videoRef}
+          src={videoUrl}
+          className="w-full h-full object-cover"
+          playsInline
+          onClick={togglePlay}
+        />
+      )}
+
+      {/* Transparent overlay for clicks */}
+      <div
+        className="absolute inset-0 cursor-pointer z-10"
         onClick={togglePlay}
-        poster="/professional-business-presentation-thumbnail.jpg"
       />
 
       {/* Play overlay when paused */}
       {!isPlaying && (
         <div
-          className="absolute inset-0 flex items-center justify-center bg-foreground/20 cursor-pointer"
+          className="absolute inset-0 flex items-center justify-center bg-black/40 z-20 transition-all duration-300"
           onClick={togglePlay}
         >
-          <div className="flex items-center justify-center h-20 w-20 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform">
-            <Play className="h-8 w-8 ml-1" />
+          <div className="flex items-center justify-center h-20 w-20 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform duration-300 group">
+            <Play className="h-8 w-8 ml-1 group-hover:fill-current transition-all" />
           </div>
         </div>
       )}
 
       {/* Controls */}
       <div
-        className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-foreground/80 to-transparent transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0"}`}
+        className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/40 to-transparent transition-opacity duration-300 z-30 ${showControls ? "opacity-100" : "opacity-0"}`}
       >
         {/* Progress bar */}
-        <div className="relative h-1 bg-background/30 rounded-full mb-4 cursor-pointer">
-          <div className="absolute inset-y-0 left-0 bg-primary rounded-full" style={{ width: `${progress}%` }} />
+        <div className="relative h-1.5 bg-white/20 rounded-full mb-4 cursor-pointer overflow-hidden">
+          <div
+            className="absolute inset-y-0 left-0 bg-primary transition-all duration-300 ease-out"
+            style={{ width: `${progress}%` }}
+          />
         </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={togglePlay} className="text-background hover:text-background">
-              {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => { e.stopPropagation(); togglePlay(); }}
+              className="text-white hover:bg-white/10"
+            >
+              {isPlaying ? <Pause className="h-5 w-5 fill-current" /> : <Play className="h-5 w-5 fill-current" />}
             </Button>
-            <Button variant="ghost" size="icon" onClick={toggleMute} className="text-background hover:text-background">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={(e) => { e.stopPropagation(); toggleMute(); }}
+              className="text-white hover:bg-white/10"
+            >
               {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
             </Button>
-            <span className="text-background text-sm ml-2">{formatTime(currentTime)}</span>
+            <span className="text-white text-sm font-medium ml-2 tabular-nums">
+              {formatTime(currentTime)} / {formatTime(duration)}
+            </span>
           </div>
 
           <Button
             variant="ghost"
             size="icon"
-            onClick={toggleFullscreen}
-            className="text-background hover:text-background"
+            onClick={(e) => { e.stopPropagation(); toggleFullscreen(); }}
+            className="text-white hover:bg-white/10"
           >
             <Maximize className="h-5 w-5" />
           </Button>
         </div>
       </div>
 
-      {currentTime < revealTimeSeconds && isPlaying && (
-        <div className="absolute top-4 right-4 bg-foreground/80 text-background px-3 py-2 rounded-lg text-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-24 h-1.5 bg-background/30 rounded-full overflow-hidden">
+      {/* Reveal Progress Badge */}
+      {currentTime < revealTimeSeconds && (
+        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white border border-white/10 px-4 py-2 rounded-full text-xs font-semibold z-30 animate-in fade-in zoom-in duration-300">
+          <div className="flex items-center gap-3">
+            <div className="w-20 h-1.5 bg-white/20 rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary rounded-full transition-all duration-300"
                 style={{ width: `${revealProgress}%` }}
               />
             </div>
-            <span>{formatTime(revealTimeSeconds - currentTime)}</span>
+            <span className="tabular-nums">
+              {formatTime(Math.max(0, revealTimeSeconds - currentTime))} para desbloquear
+            </span>
           </div>
         </div>
       )}

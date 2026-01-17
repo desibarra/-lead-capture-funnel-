@@ -9,7 +9,8 @@ serve(async (req) => {
         console.log("Payload recibido:", payload)
 
         const record = payload.record || payload
-        const { name, phone } = record
+        const name = record.nombre || record.name
+        const phone = record.telefono || record.phone
 
         if (!phone) {
             return new Response(JSON.stringify({ error: "No phone number provided" }), {
@@ -21,19 +22,17 @@ serve(async (req) => {
         // Implementación del retraso de 20 minutos
         // Nota: En producción con Supabase Edge Functions, para retrasos largos 
         // se recomienda usar pg_cron o colas de mensajes debido al timeout de ejecución.
-        console.log(`Programando envío para ${name} (${phone}) en 20 minutos...`)
-
-        // El mensaje solicitado
-        const message = `Hola ${name}, soy de Kontify. Notamos que viste nuestra clase gratuita referente a la obtención de asesoría profesional contable y fiscal. ¿Te gustaría agendar tu cita sin compromiso?`
-
-        // Iniciamos el timer de forma asíncrona para no bloquear la respuesta inmediata si es necesario
-        // Aunque el usuario pidió que la función implemente el retraso.
-        const waitTime = 20 * 60 * 1000
+        // REDUCIDO: 5 segundos para prueba. 
+        // Las Edge Functions tienen un límite de ejecución (usualmente 60s).
+        const waitTime = 5 * 1000
+        console.log(`Esperando ${waitTime / 1000}s para enviar mensaje...`)
 
         // Esperamos los 20 minutos
         await new Promise(resolve => setTimeout(resolve, waitTime))
 
         console.log(`Enviando mensaje a ${phone} via 2Chat...`)
+
+        const message = `Hola ${name}, soy de Kontify. Notamos que viste nuestra clase gratuita referente a la obtención de asesoría profesional contable y fiscal. ¿Te gustaría agendar tu cita sin compromiso?`
 
         const response = await fetch("https://api.2chat.co/v1/messaging/send/text", {
             method: "POST",
