@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Shield, ArrowLeft, CheckCircle } from "lucide-react"
 import Link from "next/link"
 
-const REVEAL_TIME_SECONDS = 5 * 60 // 5 minutes
+const REVEAL_TIME_SECONDS = 7 * 60 // 7 minutes
 const DEFAULT_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4"
 const CALENDAR_URL = "https://calendar.app.google/cg32hZ7pVf2XnDK27"
 
@@ -116,7 +116,7 @@ export default function VSLPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
-                Mira 5 minutos para desbloquear el calendario
+                Mira 7 minutos para desbloquear el calendario
               </span>
             )}
             {hasReachedThreshold && (
