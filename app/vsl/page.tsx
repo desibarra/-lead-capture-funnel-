@@ -7,9 +7,9 @@ import { createClient } from "@/lib/supabase/client"
 import { Shield, ArrowLeft, CheckCircle } from "lucide-react"
 import Link from "next/link"
 
-const REVEAL_TIME_SECONDS = 7 * 60 // 7 minutes
+const REVEAL_TIME_SECONDS = 5 * 60 // 5 minutes
 const DEFAULT_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4"
-const CALENDAR_URL = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ2L3lQR5Y0qP7K3qK2W1xD0eLmZ8K3fY7qJ?gv=true"
+const CALENDAR_URL = "https://calendar.app.google/cg32hZ7pVf2XnDK27"
 
 export default function VSLPage() {
   const [videoUrl, setVideoUrl] = useState(DEFAULT_VIDEO_URL)
@@ -116,7 +116,7 @@ export default function VSLPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
-                Mira 7 minutos para desbloquear el calendario
+                Mira 5 minutos para desbloquear el calendario
               </span>
             )}
             {hasReachedThreshold && (
@@ -150,24 +150,14 @@ export default function VSLPage() {
         </section>
 
         {/* Calendar Section */}
-        <section className="max-w-4xl mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
-              {hasReachedThreshold ? "Agenda tu diagnóstico fiscal gratuito" : "Tu calendario está casi listo"}
-            </h2>
-            <p className="text-muted-foreground">
-              {hasReachedThreshold
-                ? "Selecciona el día y hora que mejor te convenga para tu sesión de 30 minutos"
-                : "Continúa viendo el video para desbloquear el acceso al calendario"}
-            </p>
-          </div>
-
-          <CalendarReveal
-            isRevealed={hasReachedThreshold}
-            calendarUrl={CALENDAR_URL}
-            timeRemainingSeconds={timeRemainingSeconds}
-          />
-        </section>
+        {hasReachedThreshold && (
+          <section className="max-w-4xl mx-auto">
+            <CalendarReveal
+              isRevealed={hasReachedThreshold}
+              calendarUrl={CALENDAR_URL}
+            />
+          </section>
+        )}
 
         {/* Trust indicators */}
         <section className="max-w-4xl mx-auto mt-12 pt-8 border-t border-border">

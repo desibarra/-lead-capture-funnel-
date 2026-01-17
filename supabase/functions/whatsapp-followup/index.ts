@@ -39,11 +39,11 @@ serve(async (req) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "X-User-API-Key": Deno.env.get("2CHAT_API_KEY") || ""
+                "X-User-API-Key": Deno.env.get("TWO_CHAT_API_KEY") || ""
             },
             body: JSON.stringify({
                 to_number: phone,
-                channel_id: Deno.env.get("2CHAT_CANAL_ID") || "",
+                channel_id: Deno.env.get("TWO_CHAT_CANAL_ID") || "",
                 text: message
             })
         })
@@ -53,7 +53,7 @@ serve(async (req) => {
 
         return new Response(JSON.stringify({
             message: "Proceso completado",
-            2chat_response: result
+            chat_response: result
         }), {
             headers: { "Content-Type": "application/json" },
         })
