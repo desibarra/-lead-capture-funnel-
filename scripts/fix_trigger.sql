@@ -26,8 +26,8 @@ RETURNS TRIGGER AS $$
 DECLARE
   edge_function_url TEXT;
 BEGIN
-  -- URL updated to your project
-  edge_function_url := 'https://uxbrioqlqdkjhowhyjmz.supabase.co/functions/v1/whatsapp-followup';
+  -- URL actualizada a Vercel (más confiable que Edge Functions para este caso)
+  edge_function_url := 'https://lead-capture-funnel.vercel.app/api/whatsapp';
   
   PERFORM net.http_post(
     url := edge_function_url,
