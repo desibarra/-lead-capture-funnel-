@@ -82,7 +82,25 @@ export function LeadForm() {
         created_at: newLead?.created_at
       })
 
-      // 3. Mark Facebook Lead conversion
+      // 3. Send WhatsApp notification via our Vercel API
+      try {
+        await fetch("/api/whatsapp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            record: {
+              nombre: formData.name,
+              telefono: formattedPhone,
+              correo: formData.email
+            }
+          })
+        });
+      } catch (wsError) {
+        console.error("Error enviando WhatsApp:", wsError);
+        // No bloqueamos el flujo si el WhatsApp falla, pero lo logueamos
+      }
+
+      // 4. Mark Facebook Lead conversion
       if (typeof window !== "undefined" && (window as any).fbq) {
         ; (window as any).fbq("track", "Lead")
       }
