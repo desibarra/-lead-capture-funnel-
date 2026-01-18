@@ -24,22 +24,21 @@ export async function POST(req: Request) {
         const apiKey = (process.env.TWO_CHAT_API_KEY || "").trim();
         const channelId = (process.env.TWO_CHAT_CHANNEL_ID || process.env.TWO_CHAT_CANAL_ID || process.env.TWO_CHAT_CANAL__ID || "").trim();
 
-        // LOG DE SEGURIDAD (Solo para saber si las llaves existen y su formato)
-        console.log("Debug Llaves:", {
-            hasApiKey: apiKey.length > 0,
-            apiKeyStart: apiKey.substring(0, 5) + "...",
-            hasChannelId: channelId.length > 0,
-            channelIdStart: channelId.substring(0, 5) + "...",
+        // LOG DE SEGURIDAD MEJORADO
+        console.log("Debug Auth:", {
+            keyExists: !!apiKey,
+            keySuffix: apiKey ? `...${apiKey.slice(-4)}` : "N/A",
+            channelExists: !!channelId,
+            channelSuffix: channelId ? `...${channelId.slice(-4)}` : "N/A",
+            endpoint: "open/whatsapp/send-message"
         });
 
         if (!apiKey || !channelId) {
-            console.error("Faltan llaves de configuración en Vercel. ChannelID detectado:", channelId ? "SI" : "NO");
-            return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
+            return NextResponse.json({ error: "Configuración incompleta en Vercel" }, { status: 500 });
         }
 
-        console.log(`Intentando enviar WhatsApp a ${phone} usando canal ${channelId.substring(0, 8)}...`);
-
-        const response = await fetch("https://api.p.2chat.io/v1/messaging/send/text", {
+        // Intentamos con el endpoint "open" que es el más estándar actualmente
+        const response = await fetch("https://api.p.2chat.io/open/whatsapp/send-message", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -47,7 +46,8 @@ export async function POST(req: Request) {
             },
             body: JSON.stringify({
                 to_number: phone,
-                channel_id: channelId,
+                from_number: "+524776355734", // El número del dashboard del usuario
+                source_uuid: channelId,      // El WPN... que tiene el usuario
                 text: message,
             }),
         });
@@ -55,11 +55,16 @@ export async function POST(req: Request) {
         const result = await response.json();
 
         if (!response.ok) {
-            console.error("Error de 2Chat SDK:", result);
-            return NextResponse.json({ error: result.message || "Error en 2Chat" }, { status: response.status });
+            console.error("2Chat Error Detallado:", {
+                status: response.status,
+                body: result
+            });
+            return NextResponse.json({
+                error: "Error de autenticación o envío en 2Chat",
+                details: result
+            }, { status: response.status });
         }
 
-        console.log("¡Éxito en 2Chat!", result);
         return NextResponse.json({ success: true, result });
     } catch (error: any) {
         console.error("Error fatal en API WhatsApp:", error);
