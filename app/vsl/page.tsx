@@ -90,17 +90,17 @@ export default function VSLPage() {
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 lg:py-12">
+      <div className="container mx-auto px-4 py-6 sm:py-8 lg:py-12">
         {/* Video Section */}
-        <section className="max-w-4xl mx-auto mb-12">
-          <div className="text-center mb-8">
-            <span className="inline-block text-sm font-semibold text-primary uppercase tracking-wider mb-2">
+        <section className="max-w-4xl mx-auto mb-8 sm:mb-12">
+          <div className="text-center mb-6 sm:mb-8">
+            <span className="inline-block text-[10px] sm:text-sm font-semibold text-primary uppercase tracking-widest mb-2">
               Contenido Exclusivo
             </span>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 text-balance">
+            <h1 className="text-xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-4 leading-tight text-balance px-1">
               Descubre las 3 estrategias fiscales que te ahorrarán miles de pesos
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto px-2">
               En este video te revelaremos exactamente cómo los empresarios más exitosos optimizan sus impuestos de
               forma completamente legal.
             </p>
@@ -108,41 +108,41 @@ export default function VSLPage() {
 
           <VideoPlayer videoUrl={videoUrl} onTimeUpdate={handleTimeUpdate} revealTimeSeconds={REVEAL_TIME_SECONDS} />
 
-          <div className="mt-4 flex items-center justify-between text-sm">
-            <span className="text-muted-foreground">{formatMinutes(effectiveTimeSeconds)} visto</span>
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
+            <span className="text-muted-foreground order-2 sm:order-1">{formatMinutes(effectiveTimeSeconds)} visto</span>
             {!hasReachedThreshold && (
-              <span className="text-muted-foreground flex items-center gap-2">
+              <span className="text-muted-foreground flex items-center gap-2 order-1 sm:order-2 bg-muted/50 px-3 py-1.5 rounded-full">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                 </span>
-                Mira 7 minutos para desbloquear el calendario
+                <span className="font-medium whitespace-nowrap">7:00 para desbloquear calendario</span>
               </span>
             )}
             {hasReachedThreshold && (
-              <span className="text-green-600 flex items-center gap-2">
+              <span className="text-green-600 flex items-center gap-2 order-1 sm:order-2 bg-green-50 px-3 py-1.5 rounded-full">
                 <CheckCircle className="h-4 w-4" />
-                Calendario desbloqueado
+                <span className="font-medium">Calendario desbloqueado</span>
               </span>
             )}
           </div>
         </section>
 
         {/* Key Points */}
-        <section className="max-w-4xl mx-auto mb-12">
-          <div className="grid sm:grid-cols-3 gap-4">
+        <section className="max-w-4xl mx-auto mb-10 sm:mb-12">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {[
-              { title: "Deducciones ocultas", desc: "Gastos que probablemente no estás deduciendo" },
-              { title: "Estructura óptima", desc: "El tipo de empresa ideal para tu situación" },
-              { title: "Protección patrimonial", desc: "Cómo blindar tus activos legalmente" },
+              { title: "Deducciones ocultas", desc: "Gastos que quizás no deduces" },
+              { title: "Estructura óptima", desc: "Tu tipo de empresa ideal" },
+              { title: "Protección patrimonial", desc: "Blindar activos legalmente" },
             ].map((point, index) => (
-              <div key={index} className="flex items-start gap-3 p-4 rounded-lg bg-muted/50">
-                <div className="flex items-center justify-center h-8 w-8 rounded-full bg-primary text-primary-foreground text-sm font-bold flex-shrink-0">
+              <div key={index} className="flex items-center sm:items-start gap-3 p-3 sm:p-4 rounded-lg bg-muted/30 border border-border/50">
+                <div className="flex items-center justify-center h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-primary text-primary-foreground text-xs sm:text-sm font-bold flex-shrink-0">
                   {index + 1}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-foreground text-sm">{point.title}</h3>
-                  <p className="text-xs text-muted-foreground">{point.desc}</p>
+                  <h3 className="font-semibold text-foreground text-sm sm:text-sm leading-tight">{point.title}</h3>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">{point.desc}</p>
                 </div>
               </div>
             ))}
@@ -151,7 +151,7 @@ export default function VSLPage() {
 
         {/* Calendar Section */}
         {hasReachedThreshold && (
-          <section className="max-w-4xl mx-auto">
+          <section className="max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
             <CalendarReveal
               isRevealed={hasReachedThreshold}
               calendarUrl={CALENDAR_URL}
@@ -160,18 +160,18 @@ export default function VSLPage() {
         )}
 
         {/* Trust indicators */}
-        <section className="max-w-4xl mx-auto mt-12 pt-8 border-t border-border">
-          <div className="flex flex-wrap justify-center gap-8 text-center text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+        <section className="max-w-4xl mx-auto mt-10 pt-8 border-t border-border">
+          <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8 text-center text-[10px] sm:text-sm text-muted-foreground">
+            <div className="flex items-center justify-center gap-2">
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
               <span>100% Confidencial</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+            <div className="flex items-center justify-center gap-2">
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
               <span>Sin compromiso</span>
             </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle className="h-4 w-4 text-green-500" />
+            <div className="flex items-center justify-center gap-2">
+              <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-500" />
               <span>+500 empresarios asesorados</span>
             </div>
           </div>

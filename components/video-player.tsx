@@ -255,9 +255,9 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
 
       {/* Reveal Progress Badge */}
       {currentTime < revealTimeSeconds && (
-        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white border border-white/10 px-4 py-2 rounded-full text-xs font-semibold z-30 animate-in fade-in zoom-in duration-300">
-          <div className="flex items-center gap-3">
-            <div className="w-20 h-1.5 bg-white/20 rounded-full overflow-hidden">
+        <div className="absolute top-2 sm:top-4 right-2 sm:right-4 bg-black/70 backdrop-blur-md text-white border border-white/10 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-semibold z-30 animate-in fade-in zoom-in duration-300">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="hidden xs:block w-16 sm:w-20 h-1 sm:h-1.5 bg-white/20 rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary rounded-full transition-all duration-300"
                 style={{ width: `${revealProgress}%` }}

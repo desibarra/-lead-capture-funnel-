@@ -22,22 +22,22 @@ export default function HomePage() {
       </header>
 
       {/* Hero + Form Section */}
-      <section className="py-12 lg:py-20 bg-gradient-to-b from-muted/30 to-background">
+      <section className="py-8 sm:py-12 lg:py-20 bg-gradient-to-b from-muted/30 to-background">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center max-w-6xl mx-auto">
             <HeroSection />
 
-            <Card className="border-2 border-primary/20 shadow-xl">
-              <CardHeader className="text-center pb-2">
-                <div className="inline-flex items-center justify-center gap-2 bg-primary/10 text-primary text-sm font-medium px-4 py-2 rounded-full mb-4 mx-auto">
+            <Card className="border-2 border-primary/20 shadow-xl overflow-hidden">
+              <CardHeader className="text-center pb-2 px-4 sm:px-6">
+                <div className="inline-flex items-center justify-center gap-2 bg-primary/10 text-primary text-[10px] sm:text-sm font-medium px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4 mx-auto">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
                   </span>
                   Diagnóstico gratuito disponible
                 </div>
-                <CardTitle className="text-2xl">Agenda tu diagnóstico fiscal gratuito</CardTitle>
-                <p className="text-muted-foreground text-sm mt-2">
+                <CardTitle className="text-xl sm:text-2xl leading-tight">Agenda tu diagnóstico fiscal gratuito</CardTitle>
+                <p className="text-muted-foreground text-xs sm:text-sm mt-2">
                   Descubre cuánto podrías estar ahorrando en impuestos
                 </p>
               </CardHeader>
