@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
 import { Loader2, CheckCircle, ArrowRight } from "lucide-react"
-import { syncLeadToGoogleSheets } from "@/lib/googleSheets"
 
 const COUNTRY_CODES = [
   { code: "+52", country: "MX", flag: "🇲🇽" },
@@ -24,7 +23,7 @@ const COUNTRY_CODES = [
 
 export function LeadForm() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [countryCode, setCountryCode] = useState("+52")
@@ -33,6 +32,9 @@ export function LeadForm() {
     phone: "",
     email: "",
   })
+
+  // CAPA 1: useRef para bloqueo inmediato (más rápido que setState)
+  const isSubmittingRef = useRef(false)
 
   // Validate phone has at least 10 digits
   const validatePhone = (phone: string): boolean => {
@@ -48,13 +50,28 @@ export function LeadForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (isLoading) return // Extra guard against double clicks
-    setIsLoading(true)
+
+    // CAPA 2: Verificación inmediata con useRef (bloqueo instantáneo)
+    if (isSubmittingRef.current) {
+      console.warn("Envío duplicado bloqueado por useRef")
+      return
+    }
+
+    // CAPA 3: Verificación con estado de React
+    if (isSubmitting) {
+      console.warn("Envío duplicado bloqueado por state")
+      return
+    }
+
+    // Activar ambos bloqueos
+    isSubmittingRef.current = true
+    setIsSubmitting(true)
     setError(null)
 
     if (!validatePhone(formData.phone)) {
       setError("Por favor ingresa un número de teléfono válido (10 dígitos)")
-      setIsLoading(false)
+      isSubmittingRef.current = false
+      setIsSubmitting(false)
       return
     }
 
@@ -93,7 +110,7 @@ export function LeadForm() {
         console.error("Error en integraciones:", wsError);
       }
 
-      // 4. Mark Facebook Lead conversion
+      // 3. Mark Facebook Lead conversion
       if (typeof window !== "undefined" && (window as any).fbq) {
         ; (window as any).fbq("track", "Lead")
       }
@@ -108,7 +125,11 @@ export function LeadForm() {
       setError(`Error: ${err.message || "Hubo un error al enviar tus datos. Por favor, intenta de nuevo."}`)
       console.error(err)
     } finally {
-      setIsLoading(false)
+      // Liberar bloqueos solo si hubo error (si fue exitoso, ya redirigimos)
+      if (!isSuccess) {
+        isSubmittingRef.current = false
+        setIsSubmitting(false)
+      }
     }
   }
 
@@ -195,10 +216,10 @@ export function LeadForm() {
 
       <Button
         type="submit"
-        disabled={isLoading}
+        disabled={isSubmitting}
         className="h-12 sm:h-14 text-sm sm:text-lg font-semibold mt-2 bg-primary hover:bg-primary/90 w-full px-4 sm:px-6"
       >
-        {isLoading ? (
+        {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Enviando...
