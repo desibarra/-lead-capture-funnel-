@@ -48,6 +48,7 @@ export function LeadForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (isLoading) return // Extra guard against double clicks
     setIsLoading(true)
     setError(null)
 
