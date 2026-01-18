@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
         console.log(`Intentando enviar WhatsApp a ${phone} usando canal ${canalId}...`);
 
-        const response = await fetch("https://api.2chat.co/v1/messaging/send/text", {
+        const response = await fetch("https://api.p.2chat.io/v1/messaging/send/text", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
