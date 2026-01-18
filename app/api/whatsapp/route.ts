@@ -20,19 +20,28 @@ export async function POST(req: Request) {
 
         const message = `Hola ${name}, soy de Kontify. Notamos que viste nuestra clase gratuita referente a la obtención de asesoría profesional contable y fiscal. ¿Te gustaría agendar tu cita sin compromiso?`;
 
-        // 1. Estandarización de Variables
+        // 1. Estandarización y Saneamiento de Variables
         const apiKey = (process.env.TWO_CHAT_API_KEY || "").trim();
         const channelId = (process.env.TWO_CHAT_CHANNEL_ID || "").trim();
+        const rawFromNumber = (process.env.TWO_CHAT_FROM_NUMBER || "").trim();
 
-        // 2. Inyección de Logs de Auditoría
-        console.log("Auditoría de Envío - Canal:", !!channelId, "API Key:", !!apiKey);
+        // Saneamiento de Datos: eliminar espacios o guiones
+        const cleanFromNumber = rawFromNumber.replace(/[\s\-().]/g, '');
 
-        if (!apiKey || !channelId) {
-            console.error("Faltan llaves de configuración en Vercel. Asegúrate de que existan TWO_CHAT_API_KEY y TWO_CHAT_CHANNEL_ID");
+        // 2. Logging de Emergencia (DEBUG ENVÍO)
+        console.log("DEBUG ENVÍO:", {
+            to: phone,
+            from: cleanFromNumber,
+            channel: channelId,
+            apiKeyExists: !!apiKey
+        });
+
+        if (!apiKey || !channelId || !cleanFromNumber) {
+            console.error("Faltan llaves de configuración en Vercel. Requerido: API_KEY, CHANNEL_ID, FROM_NUMBER");
             return NextResponse.json({ error: "Configuración incompleta en Vercel" }, { status: 500 });
         }
 
-        // 3. Unificación de Endpoints y Estructura
+        // 3. Unificación de Endpoints y Estructura con Formato Internacional Estricto
         const response = await fetch("https://api.p.2chat.io/open/whatsapp/send-message", {
             method: "POST",
             headers: {
@@ -41,7 +50,8 @@ export async function POST(req: Request) {
             },
             body: JSON.stringify({
                 to_number: phone,
-                from_number: channelId, // En el endpoint "open", from_number puede ser el ID del canal o el número
+                from_number: cleanFromNumber, // El número exacto con '+' y código de país
+                source_uuid: channelId,       // Vinculado al número anterior
                 text: message,
             }),
         });
