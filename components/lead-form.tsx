@@ -75,15 +75,7 @@ export function LeadForm() {
         throw insertError
       }
 
-      // 2. Sync to Google Sheets (Mirror) via Webhook
-      await syncLeadToGoogleSheets({
-        name: formData.name,
-        phone: formattedPhone,
-        email: formData.email,
-        created_at: newLead?.created_at
-      })
-
-      // 3. Send WhatsApp notification via our Vercel API
+      // 2. Sync to Google Sheets and WhatsApp (Server Side)
       try {
         const baseUrl = window.location.origin;
         await fetch(`${baseUrl}/api/whatsapp`, {
@@ -98,7 +90,7 @@ export function LeadForm() {
           })
         });
       } catch (wsError) {
-        console.error("Error enviando WhatsApp:", wsError);
+        console.error("Error en integraciones:", wsError);
       }
 
       // 4. Mark Facebook Lead conversion

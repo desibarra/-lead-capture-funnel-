@@ -58,6 +58,27 @@ export async function POST(req: Request) {
 
         const result = await response.json();
 
+        // 4. Sincronización con Google Sheets (Make.com) - Server Side para mayor confiabilidad
+        const makeWebhookUrl = process.env.MAKE_WEBHOOK_URL || process.env.NEXT_PUBLIC_MAKE_WEBHOOK_URL;
+        if (makeWebhookUrl) {
+            try {
+                await fetch(makeWebhookUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        nombre: name,
+                        telefono: phone,
+                        email: record.correo || record.email,
+                        source: "Landing Page Vercel",
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                console.log("¡Sincronización con Make.com exitosa!");
+            } catch (makeError) {
+                console.error("Error sincronizando con Make.com:", makeError);
+            }
+        }
+
         if (!response.ok) {
             console.error("2Chat Error Detallado:", {
                 status: response.status,
