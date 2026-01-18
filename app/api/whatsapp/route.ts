@@ -41,7 +41,7 @@ export async function POST(req: Request) {
             },
             body: JSON.stringify({
                 to_number: phone,
-                source_uuid: channelId, // Remitente depende únicamente del Channel ID
+                from_number: channelId, // En el endpoint "open", from_number puede ser el ID del canal o el número
                 text: message,
             }),
         });
