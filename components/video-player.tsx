@@ -30,29 +30,13 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
   useEffect(() => {
     if (!isYoutube) return
 
-    const tag = document.createElement("script")
-    tag.src = "https://www.youtube.com/iframe_api"
-    const firstScriptTag = document.getElementsByTagName("script")[0]
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag)
+    const initPlayer = () => {
+      if (playerRef.current) return;
 
-    const onPlayerReady = (event: any) => {
-      setDuration(event.target.getDuration())
-    }
+      const videoId = videoUrl.includes("v=")
+        ? videoUrl.split("v=")[1]?.split("&")[0]
+        : videoUrl.split("/").pop();
 
-    const onPlayerStateChange = (event: any) => {
-      // YT.PlayerState.PLAYING
-      if (event.data === 1) setIsPlaying(true)
-      // YT.PlayerState.PAUSED
-      if (event.data === 2) setIsPlaying(false)
-      // YT.PlayerState.ENDED
-      if (event.data === 0) {
-        setIsPlaying(false)
-        onTimeUpdate(duration)
-      }
-    }
-
-    (window as any).onYouTubeIframeAPIReady = () => {
-      const videoId = videoUrl.split("v=")[1]?.split("&")[0] || videoUrl.split("/").pop()
       playerRef.current = new (window as any).YT.Player("youtube-player", {
         height: "100%",
         width: "100%",
@@ -65,20 +49,50 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
           playsinline: 1,
         },
         events: {
-          onReady: onPlayerReady,
-          onStateChange: onPlayerStateChange,
+          onReady: (event: any) => {
+            setDuration(event.target.getDuration())
+          },
+          onStateChange: (event: any) => {
+            if (event.data === 1) setIsPlaying(true)
+            if (event.data === 2) setIsPlaying(false)
+            if (event.data === 0) {
+              setIsPlaying(false)
+              onTimeUpdate(duration)
+            }
+          },
         },
       })
     }
 
+    if (!(window as any).YT) {
+      const tag = document.createElement("script")
+      tag.src = "https://www.youtube.com/iframe_api"
+      const firstScriptTag = document.getElementsByTagName("script")[0]
+      if (firstScriptTag && firstScriptTag.parentNode) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag)
+      } else {
+        document.head.appendChild(tag)
+      }
+
+      (window as any).onYouTubeIframeAPIReady = initPlayer
+    } else {
+      initPlayer()
+    }
+
     const interval = setInterval(() => {
       if (playerRef.current && playerRef.current.getCurrentTime) {
-        const time = playerRef.current.getCurrentTime()
-        const dur = playerRef.current.getDuration()
-        setCurrentTime(time)
-        setDuration(dur)
-        setProgress((time / dur) * 100)
-        onTimeUpdate(time)
+        try {
+          const time = playerRef.current.getCurrentTime()
+          const dur = playerRef.current.getDuration()
+          if (time !== undefined && dur !== undefined) {
+            setCurrentTime(time)
+            setDuration(dur)
+            setProgress((time / dur) * 100)
+            onTimeUpdate(time)
+          }
+        } catch (e) {
+          // Ignore YT errors during init
+        }
       }
     }, 1000)
 
