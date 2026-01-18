@@ -82,6 +82,11 @@ export function LeadForm() {
         created_at: newLead?.created_at
       })
 
+      // 3. Mark Facebook Lead conversion
+      if (typeof window !== "undefined" && (window as any).fbq) {
+        ; (window as any).fbq("track", "Lead")
+      }
+
       setIsSuccess(true)
 
       // Redirect to VSL page after short delay
