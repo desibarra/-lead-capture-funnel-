@@ -1,15 +1,27 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Cinzel, Manrope } from "next/font/google"
 import { Analytics } from "@vercel/analytics/react"
 import "./globals.css"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" })
+const cinzel = Cinzel({
+  subsets: ["latin"],
+  variable: "--font-cinzel",
+  weight: ["400", "700"],
+  display: "swap",
+})
+
+const manrope = Manrope({
+  subsets: ["latin"],
+  variable: "--font-manrope",
+  weight: ["400", "600", "700"],
+  display: "swap",
+})
 
 export const metadata: Metadata = {
-  title: "FiscalPro - Asesoría Fiscal y Contable",
+  title: "FiscalPro - Estrategia Fiscal de Alto Nivel para Empresarios",
   description:
-    "Optimiza tus impuestos de forma legal y protege tu patrimonio. Diagnóstico fiscal gratuito para empresarios.",
+    "Reduce hasta 40% tus impuestos legalmente. Blindaje patrimonial y optimización fiscal de élite. Diagnóstico exclusivo gratuito para empresarios visionarios.",
   generator: "v0.app",
   icons: {
     icon: [
@@ -40,7 +52,7 @@ export default function RootLayout({
   const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID
 
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="es" suppressHydrationWarning className="dark">
       <head>
         {FB_PIXEL_ID && (
           <Script id="fb-pixel" strategy="afterInteractive">
@@ -59,7 +71,7 @@ export default function RootLayout({
           </Script>
         )}
       </head>
-      <body className={`${inter.variable} antialiased font-sans`}>
+      <body className={`${cinzel.variable} ${manrope.variable} antialiased font-['Manrope'] bg-[#0A1428]`}>
         {children}
         <Analytics />
       </body>
