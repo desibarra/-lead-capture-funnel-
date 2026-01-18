@@ -185,8 +185,7 @@ export function LeadForm() {
       <Button
         type="submit"
         disabled={isLoading}
-        size="lg"
-        className="h-14 text-lg font-semibold mt-2 bg-primary hover:bg-primary/90"
+        className="h-12 sm:h-14 text-sm sm:text-lg font-semibold mt-2 bg-primary hover:bg-primary/90 w-full px-4 sm:px-6"
       >
         {isLoading ? (
           <>

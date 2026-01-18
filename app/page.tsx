@@ -69,7 +69,7 @@ export default function HomePage() {
               e.preventDefault()
               window.scrollTo({ top: 0, behavior: "smooth" })
             }}
-            className="inline-flex items-center justify-center h-12 px-8 font-semibold rounded-lg bg-background text-foreground hover:bg-background/90 transition-colors"
+            className="inline-flex items-center justify-center h-12 px-4 sm:px-8 text-sm sm:text-base font-semibold rounded-lg bg-background text-foreground hover:bg-background/90 transition-colors w-full sm:w-auto"
           >
             Quiero mi diagnóstico gratuito
           </a>
