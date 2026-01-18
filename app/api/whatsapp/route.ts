@@ -20,11 +20,24 @@ export async function POST(req: Request) {
 
         const message = `Hola ${name}, soy de Kontify. Notamos que viste nuestra clase gratuita referente a la obtención de asesoría profesional contable y fiscal. ¿Te gustaría agendar tu cita sin compromiso?`;
 
-        // Limpiar posibles espacios en las llaves
+        // Intentar leer con uno o dos guiones bajos por si acaso (vimos un doble guion en la captura)
         const apiKey = (process.env.TWO_CHAT_API_KEY || "").trim();
-        const canalId = (process.env.TWO_CHAT_CANAL_ID || "").trim();
+        const canalId = (process.env.TWO_CHAT_CANAL_ID || process.env.TWO_CHAT_CANAL__ID || "").trim();
 
-        console.log(`Intentando enviar WhatsApp a ${phone} usando canal ${canalId}...`);
+        // LOG DE SEGURIDAD (Solo para saber si las llaves existen y su formato)
+        console.log("Debug Llaves:", {
+            hasApiKey: apiKey.length > 0,
+            apiKeyStart: apiKey.substring(0, 5) + "...",
+            hasCanalId: canalId.length > 0,
+            canalIdStart: canalId.substring(0, 5) + "...",
+        });
+
+        if (!apiKey || !canalId) {
+            console.error("Faltan llaves de configuración en Vercel. CanalID detectado:", canalId ? "SI" : "NO");
+            return NextResponse.json({ error: "Configuración incompleta" }, { status: 500 });
+        }
+
+        console.log(`Intentando enviar WhatsApp a ${phone} usando canal ${canalId.substring(0, 8)}...`);
 
         const response = await fetch("https://api.p.2chat.io/v1/messaging/send/text", {
             method: "POST",
