@@ -1,0 +1,31 @@
+{
+    "name": "FiscalPro - Blindaje Fiscal Empresarial",
+    "short_name": "FiscalPro",
+    "description": "Asesoría fiscal y contable profesional para empresarios. Reduce hasta 40% tus impuestos legalmente.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0A1428",
+    "theme_color": "#0A1428",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Cdefs%3E%3ClinearGradient id='goldGrad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23F1D592'/%3E%3Cstop offset='50%25' style='stop-color:%23D4AF37'/%3E%3Cstop offset='100%25' style='stop-color:%23B8860B'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='192' height='192' fill='%230A1428' rx='42'/%3E%3Cpath d='M96 42 L53 64 L53 101 C53 133 96 154 96 154 C96 154 139 133 139 101 L139 64 Z' fill='url(%23goldGrad)' stroke='%23D4AF37' stroke-width='4'/%3E%3Cpath d='M85 104 L79 98 L74 102 L85 113 L117 81 L112 76 Z' fill='%230A1428' stroke='%230A1428' stroke-width='3'/%3E%3C/svg%3E",
+            "sizes": "192x192",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='goldGrad' x1='0%25' y1='0%25' x2='0%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%23F1D592'/%3E%3Cstop offset='50%25' style='stop-color:%23D4AF37'/%3E%3Cstop offset='100%25' style='stop-color:%23B8860B'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='%230A1428' rx='112'/%3E%3Cpath d='M256 112 L141 171 L141 269 C141 355 256 411 256 411 C256 411 371 355 371 269 L371 171 Z' fill='url(%23goldGrad)' stroke='%23D4AF37' stroke-width='10'/%3E%3Cpath d='M227 278 L211 262 L197 272 L227 302 L312 217 L299 204 Z' fill='%230A1428' stroke='%230A1428' stroke-width='8'/%3E%3C/svg%3E",
+            "sizes": "512x512",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": [
+        "finance",
+        "business",
+        "productivity"
+    ],
+    "lang": "es-MX",
+    "dir": "ltr"
+}
