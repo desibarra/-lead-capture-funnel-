@@ -18,7 +18,19 @@ export async function POST(req: Request) {
             phone = `+${phone}`;
         }
 
-        const message = `Hola ${name}, soy de Kontify. Notamos que viste nuestra clase gratuita referente a la obtención de asesoría profesional contable y fiscal. ¿Te gustaría agendar tu cita sin compromiso?`;
+        const meetingLink = process.env.MEETING_LINK || process.env.NEXT_PUBLIC_MEETING_LINK || "https://calendar.app.google/cg32hZ7pVf2XnDK27";
+
+        const message = `Hola ${name}, ¡gracias por registrarte en Kontify! 🎯
+
+Te damos la bienvenida. Recuerda que tienes acceso a nuestra clase master gratuita sobre estrategias de optimización fiscal y protección patrimonial:
+
+📺 Ver masterclass: ${meetingLink}
+
+Si ya la viste o prefieres ir directo a una asesoría personalizada sin compromiso, puedes agendar tu cita aquí:
+
+📅 Agendar cita: ${meetingLink}
+
+¿En qué podemos ayudarte?`;
 
         // 1. Estandarización y Saneamiento de Variables
         const apiKey = (process.env.TWO_CHAT_API_KEY || "").trim();
