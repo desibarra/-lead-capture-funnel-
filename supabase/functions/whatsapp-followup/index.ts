@@ -32,7 +32,13 @@ serve(async (req) => {
 
         console.log(`Enviando mensaje a ${phone} via 2Chat...`)
 
-        const message = `Hola ${name}, soy de Kontify. Notamos que viste nuestra clase gratuita referente a la obtención de asesoría profesional contable y fiscal. ¿Te gustaría agendar tu cita sin compromiso?`
+        const message = `Hola ${name}, ¡gracias por tu interés en Kontify! 🎯
+
+Te comparto el enlace a nuestra clase master gratuita sobre estrategias de optimización fiscal y protección patrimonial:
+
+📺 https://calendar.app.google/cg32hZ7pVf2XnDK27
+
+Una vez que la veas, estaré encantado de ayudarte a agendar tu sesión de asesoría personalizada sin compromiso. ¿Te parece bien?`
 
         const response = await fetch("https://api.2chat.co/v1/messaging/send/text", {
             method: "POST",
