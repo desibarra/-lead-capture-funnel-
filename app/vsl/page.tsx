@@ -9,7 +9,7 @@ import Link from "next/link"
 
 const REVEAL_TIME_SECONDS = 7 * 60 // 7 minutes
 const DEFAULT_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4"
-const CALENDAR_URL = "https://calendar.app.google/cg32hZ7pVf2XnDK27"
+const CALENDAR_URL = process.env.NEXT_PUBLIC_MEETING_LINK || "https://calendar.app.google/cg32hZ7pVf2XnDK27"
 
 export default function VSLPage() {
   const [videoUrl, setVideoUrl] = useState(DEFAULT_VIDEO_URL)
