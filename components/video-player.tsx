@@ -44,9 +44,14 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
         playerVars: {
           autoplay: 0,
           controls: 0,
-          rel: 0,
-          modestbranding: 1,
+          rel: 0, // No mostrar videos relacionados (solo del mismo canal)
+          modestbranding: 1, // Ocultar logo de YouTube
           playsinline: 1,
+          fs: 0, // Deshabilitar botón de pantalla completa nativo
+          iv_load_policy: 3, // Ocultar anotaciones
+          disablekb: 1, // Deshabilitar controles de teclado
+          cc_load_policy: 0, // No mostrar subtítulos por defecto
+          enablejsapi: 1, // Habilitar API de JavaScript
         },
         events: {
           onReady: (event: any) => {
@@ -58,6 +63,12 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
             if (event.data === 0) {
               setIsPlaying(false)
               onTimeUpdate(duration)
+              // Pausar el video para evitar mostrar videos relacionados
+              setTimeout(() => {
+                if (playerRef.current) {
+                  playerRef.current.pauseVideo()
+                }
+              }, 100)
             }
           },
         },
