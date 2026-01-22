@@ -8,11 +8,11 @@ import { Shield, ArrowLeft, CheckCircle } from "lucide-react"
 import Link from "next/link"
 
 const REVEAL_TIME_SECONDS = 7 * 60 // 7 minutes
-const DEFAULT_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4"
 const CALENDAR_URL = process.env.NEXT_PUBLIC_MEETING_LINK || "https://calendar.app.google/cg32hZ7pVf2XnDK27"
 
 export default function VSLPage() {
-  const [videoUrl, setVideoUrl] = useState(DEFAULT_VIDEO_URL)
+  const [videoUrl, setVideoUrl] = useState<string | null>(null)
+  const [isLoadingVideo, setIsLoadingVideo] = useState(true)
   const [videoTimeSeconds, setVideoTimeSeconds] = useState(0)
   const [pageTimeSeconds, setPageTimeSeconds] = useState(0)
   const [hasReachedThreshold, setHasReachedThreshold] = useState(false)
@@ -30,9 +30,13 @@ export default function VSLPage() {
 
         if (data?.value) {
           setVideoUrl(data.value)
+        } else {
+          console.error("No video URL found in config_vsl")
         }
       } catch (err) {
         console.error("Error fetching VSL config:", err)
+      } finally {
+        setIsLoadingVideo(false)
       }
     }
     fetchConfig()
@@ -106,7 +110,24 @@ export default function VSLPage() {
             </p>
           </div>
 
-          <VideoPlayer videoUrl={videoUrl} onTimeUpdate={handleTimeUpdate} revealTimeSeconds={REVEAL_TIME_SECONDS} />
+          {isLoadingVideo ? (
+            <div className="relative aspect-video bg-muted rounded-xl overflow-hidden shadow-2xl animate-pulse">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="h-16 w-16 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm text-muted-foreground font-medium">Cargando video...</p>
+                </div>
+              </div>
+            </div>
+          ) : videoUrl ? (
+            <VideoPlayer videoUrl={videoUrl} onTimeUpdate={handleTimeUpdate} revealTimeSeconds={REVEAL_TIME_SECONDS} />
+          ) : (
+            <div className="relative aspect-video bg-muted rounded-xl overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <p className="text-sm text-muted-foreground">Error al cargar el video. Por favor, recarga la página.</p>
+              </div>
+            </div>
+          )}
 
           <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm">
             <span className="text-muted-foreground order-2 sm:order-1">{formatMinutes(effectiveTimeSeconds)} visto</span>
