@@ -2,7 +2,7 @@
 -- Ejecuta este script en el SQL Editor de Supabase
 
 UPDATE config_vsl
-SET value = 'https://youtu.be/cPKUa32rw50',
+SET value = 'https://youtu.be/JIGGPgVf29I',
     updated_at = NOW()
 WHERE key = 'main_vsl_url';
 

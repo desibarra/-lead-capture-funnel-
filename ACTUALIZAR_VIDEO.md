@@ -20,7 +20,7 @@ Copia y pega el siguiente código SQL:
 ```sql
 -- Actualizar la URL del video VSL en Supabase
 UPDATE config_vsl
-SET value = 'https://youtu.be/cPKUa32rw50',
+SET value = 'https://youtu.be/JIGGPgVf29I',
     updated_at = NOW()
 WHERE key = 'main_vsl_url';
 
@@ -39,8 +39,8 @@ SELECT * FROM config_vsl WHERE key = 'main_vsl_url';
 - El nuevo video debería aparecer automáticamente
 
 ## 📺 Nuevo Video
-- **URL**: https://youtu.be/cPKUa32rw50
-- **ID del Video**: cPKUa32rw50
+- **URL**: https://youtu.be/JIGGPgVf29I
+- **ID del Video**: JIGGPgVf29I
 
 ## 🔍 Solución de Problemas
 
@@ -57,14 +57,14 @@ SELECT * FROM config_vsl WHERE key = 'main_vsl_url';
 
 ### El video no se reproduce:
 1. Verifica que el video de YouTube sea público
-2. Verifica que el ID del video sea correcto: `cPKUa32rw50`
-3. Prueba el enlace directamente en YouTube: https://youtu.be/cPKUa32rw50
+2. Verifica que el ID del video sea correcto: `JIGGPgVf29I`
+3. Prueba el enlace directamente en YouTube: https://youtu.be/JIGGPgVf29I
 
 ## 📝 Notas Adicionales
 
 ### Formato de URLs de YouTube soportadas:
-- `https://youtu.be/cPKUa32rw50` ✅
-- `https://www.youtube.com/watch?v=cPKUa32rw50` ✅
+- `https://youtu.be/JIGGPgVf29I` ✅
+- `https://www.youtube.com/watch?v=JIGGPgVf29I` ✅
 
 El componente `VideoPlayer` detecta automáticamente URLs de YouTube y usa la API de YouTube para reproducirlos.
 

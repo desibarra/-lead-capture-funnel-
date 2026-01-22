@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react"
+import { Play, Pause, Volume2, VolumeX, Maximize, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface VideoPlayerProps {
@@ -20,6 +20,7 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
   const [duration, setDuration] = useState(0)
   const [showControls, setShowControls] = useState(true)
   const [isYoutube, setIsYoutube] = useState(false)
+  const [hasEnded, setHasEnded] = useState(false)
 
   // Detect if URL is YouTube
   useEffect(() => {
@@ -58,10 +59,14 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
             setDuration(event.target.getDuration())
           },
           onStateChange: (event: any) => {
-            if (event.data === 1) setIsPlaying(true)
-            if (event.data === 2) setIsPlaying(false)
-            if (event.data === 0) {
+            if (event.data === 1) { // Playing
+              setIsPlaying(true)
+              setHasEnded(false)
+            }
+            if (event.data === 2) setIsPlaying(false) // Paused
+            if (event.data === 0) { // Ended
               setIsPlaying(false)
+              setHasEnded(true)
               onTimeUpdate(duration)
               // Pausar el video para evitar mostrar videos relacionados
               setTimeout(() => {
@@ -221,13 +226,38 @@ export function VideoPlayer({ videoUrl, onTimeUpdate, revealTimeSeconds }: Video
       />
 
       {/* Play overlay when paused */}
-      {!isPlaying && (
+      {!isPlaying && !hasEnded && (
         <div
           className="absolute inset-0 flex items-center justify-center bg-black/40 z-20 transition-all duration-300"
           onClick={togglePlay}
         >
           <div className="flex items-center justify-center h-20 w-20 rounded-full bg-primary text-primary-foreground shadow-lg hover:scale-110 transition-transform duration-300 group">
             <Play className="h-8 w-8 ml-1 group-hover:fill-current transition-all" />
+          </div>
+        </div>
+      )}
+
+      {/* Overlay when video ends - Hides YouTube related videos */}
+      {hasEnded && (
+        <div className="absolute inset-0 bg-black z-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="flex items-center justify-center h-20 w-20 rounded-full bg-primary/20 mx-auto mb-4">
+              <CheckCircle className="h-10 w-10 text-primary" />
+            </div>
+            <h3 className="text-white text-xl font-bold mb-2">¡Video completado!</h3>
+            <p className="text-white/80 text-sm mb-6">Ahora puedes agendar tu diagnóstico fiscal gratuito</p>
+            <button
+              onClick={() => {
+                if (playerRef.current) {
+                  playerRef.current.seekTo(0)
+                  playerRef.current.playVideo()
+                  setHasEnded(false)
+                }
+              }}
+              className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-medium"
+            >
+              Ver de nuevo
+            </button>
           </div>
         </div>
       )}
