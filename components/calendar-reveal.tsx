@@ -1,7 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Calendar, Clock, CheckCircle, CalendarCheck } from "lucide-react"
+import { CalendarCheck, Clock, Sparkles } from "lucide-react"
 
 interface CalendarRevealProps {
   isRevealed: boolean
@@ -10,93 +9,93 @@ interface CalendarRevealProps {
 }
 
 export function CalendarReveal({ isRevealed, calendarUrl }: CalendarRevealProps) {
-  const [showCalendar, setShowCalendar] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
-
-  useEffect(() => {
-    if (isRevealed) {
-      const timer = setTimeout(() => {
-        setShowCalendar(true)
-      }, 1000)
-      return () => clearTimeout(timer)
-    }
-  }, [isRevealed])
-
   if (!isRevealed) {
     return null
   }
 
   return (
     <div className="flex flex-col items-center gap-6 py-8">
+      {/* Main CTA Button */}
       <a
         href={calendarUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="group relative w-full max-w-2xl animate-in fade-in slide-in-from-bottom-4 duration-500"
+        className="group relative w-full max-w-3xl animate-in fade-in slide-in-from-bottom-4 duration-500"
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-2xl blur-xl opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
-        <div className="relative bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl px-8 py-6 shadow-2xl transition-all duration-300 transform group-hover:scale-[1.02] group-hover:shadow-3xl flex items-center justify-center gap-4">
-          <CalendarCheck className="h-6 w-6" />
-          <div className="text-center">
-            <span className="text-xl sm:text-2xl font-bold block">
-              Agenda tu diagnóstico fiscal gratuito aquí
-            </span>
-            <span className="text-primary-foreground/80 text-sm block mt-1">
-              Sesión personalizada de 30 minutos sin compromiso
-            </span>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/30 via-primary/20 to-primary/30 rounded-2xl blur-2xl opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="relative bg-gradient-to-r from-primary to-primary/90 hover:from-primary/95 hover:to-primary text-primary-foreground rounded-2xl px-6 sm:px-10 py-8 sm:py-10 shadow-2xl transition-all duration-300 transform group-hover:scale-[1.02] group-hover:shadow-3xl">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6">
+            <div className="flex items-center justify-center h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-white/20 backdrop-blur-sm flex-shrink-0">
+              <CalendarCheck className="h-8 w-8 sm:h-10 sm:w-10" />
+            </div>
+            <div className="text-center sm:text-left flex-1">
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-bold block mb-2">
+                Agenda tu diagnóstico fiscal gratuito aquí
+              </span>
+              <span className="text-primary-foreground/90 text-sm sm:text-base lg:text-lg block">
+                Sesión personalizada de 30 minutos sin compromiso
+              </span>
+            </div>
+            <svg
+              className="h-8 w-8 sm:h-10 sm:w-10 transform group-hover:translate-x-2 transition-transform flex-shrink-0 hidden sm:block"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 8l4 4m0 0l-4 4m4-4H3"
+              />
+            </svg>
           </div>
-          <svg
-            className="h-6 w-6 transform group-hover:translate-x-1 transition-transform"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M17 8l4 4m0 0l-4 4m4-4H3"
-            />
-          </svg>
         </div>
       </a>
 
-      {showCalendar && (
-        <div className="w-full max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
-          <div className="bg-card border border-primary/20 rounded-2xl overflow-hidden shadow-2xl">
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 p-4 sm:p-6 border-b border-primary/10 flex items-center justify-center gap-3">
-              <div className="flex items-center justify-center h-10 w-10 rounded-full bg-green-500/20">
-                <CheckCircle className="h-5 w-5 text-green-600" />
-              </div>
-              <div className="text-center">
-                <h3 className="font-semibold text-foreground text-base sm:text-lg">
-                  Tu calendario está listo
-                </h3>
-                <p className="text-xs sm:text-sm text-muted-foreground">
-                  Selecciona el día y hora que mejor te convenga
-                </p>
-              </div>
+      {/* Benefits Cards */}
+      <div className="w-full max-w-3xl grid grid-cols-1 sm:grid-cols-3 gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500 delay-100">
+        {[
+          {
+            icon: Clock,
+            title: "30 minutos",
+            description: "Análisis personalizado de tu situación fiscal",
+          },
+          {
+            icon: Sparkles,
+            title: "100% Gratuito",
+            description: "Sin compromisos ni costos ocultos",
+          },
+          {
+            icon: CalendarCheck,
+            title: "Agenda ahora",
+            description: "Elige el horario que mejor te convenga",
+          },
+        ].map((benefit, index) => (
+          <div
+            key={index}
+            className="bg-card border border-border/50 rounded-xl p-4 sm:p-5 text-center hover:border-primary/50 hover:shadow-lg transition-all duration-300"
+          >
+            <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary/10 mx-auto mb-3">
+              <benefit.icon className="h-6 w-6 text-primary" />
             </div>
-
-            <div className="relative min-h-[500px] sm:min-h-[600px]">
-              {!isLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-background">
-                  <div className="flex flex-col items-center gap-4">
-                    <div className="h-8 w-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-                    <p className="text-sm text-muted-foreground">Cargando calendario...</p>
-                  </div>
-                </div>
-              )}
-              <iframe
-                src={calendarUrl}
-                className="w-full h-[500px] sm:h-[600px] border-0"
-                onLoad={() => setIsLoaded(true)}
-                title="Agendar cita"
-              />
-            </div>
+            <h3 className="font-semibold text-foreground text-sm sm:text-base mb-1">
+              {benefit.title}
+            </h3>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              {benefit.description}
+            </p>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+
+      {/* Additional Trust Indicator */}
+      <div className="text-center text-sm text-muted-foreground animate-in fade-in duration-500 delay-200">
+        <p className="flex items-center justify-center gap-2">
+          <span className="inline-block h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+          Espacios limitados disponibles esta semana
+        </p>
+      </div>
     </div>
   )
 }
