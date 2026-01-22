@@ -33,12 +33,13 @@ serve(async (req) => {
         console.log(`Enviando mensaje a ${phone} via 2Chat...`)
 
         const meetingLink = Deno.env.get("MEETING_LINK") || "https://calendar.app.google/cg32hZ7pVf2XnDK27"
+        const masterclassLink = "https://leads.mentoresestrategicos.com/vsl"
 
         const message = `Hola ${name}, ¡gracias por registrarte en Kontify! 🎯
 
 Te damos la bienvenida. Recuerda que tienes acceso a nuestra clase master gratuita sobre estrategias de optimización fiscal y protección patrimonial:
 
-📺 Ver masterclass: ${meetingLink}
+📺 Ver masterclass: ${masterclassLink}
 
 Si ya la viste o prefieres ir directo a una asesoría personalizada sin compromiso, puedes agendar tu cita aquí:
 
